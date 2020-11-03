@@ -15,11 +15,11 @@ class Train
   end
 
   def attach_carriage
-    self.carriage_count += 1 if speed.zero?
+    @carriage_count += 1 if speed.zero?
   end
 
   def detach_carriage
-    self.carriage_count -= 1 if speed.zero? && self.carriage_count.positive?
+    @carriage_count -= 1 if speed.zero? && @carriage_count.positive?
   end
 
   def route=(route)
@@ -29,17 +29,19 @@ class Train
   end
 
   def to_forward
-    unless @position == @route.length - 1
-      current_station.send_train(self, next_station)
-      @position += 1
-    end
+    return if @position == @route.length - 1
+
+    current_station.remove_train(self)
+    next_station.add_train(self)
+    @position += 1
   end
 
   def to_back
-    unless @position.zero?
-      current_station.send_train(self, previous_station)
-      @position -= 1
-    end
+    return if @position.zero?
+
+    current_station.remove_train(self)
+    previous_station.add_train(self)
+    @position -= 1
   end
 
   def current_station

@@ -14,8 +14,7 @@ class Station
     @trains.select { |train| train.type == type }
   end
 
-  def send_train(train, station)
-    station.add_train(train)
+  def remove_train(train)
     trains.delete(train)
   end
 end
