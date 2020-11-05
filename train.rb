@@ -1,7 +1,6 @@
 class Train
   attr_accessor :speed
-  attr_reader :carriage_count
-  attr_reader :type
+  attr_reader :carriage_count, :type
 
   def initialize(number, type, carriage_count)
     @number = number
@@ -55,5 +54,4 @@ class Train
   def next_station
     @route.stations[@position + 1] if @position < @route.length - 1
   end
-
 end
