@@ -1,24 +1,24 @@
 class Train
   attr_accessor :speed
-  attr_reader :carriage_count, :type
+  attr_reader :number, :carriages, :type
 
-  def initialize(number, type, carriage_count)
+  def initialize(number, type)
     @number = number
     @type = type
-    @carriage_count = carriage_count
     @speed = 0
+    @carriages = []
   end
 
   def stop
     self.speed = 0
   end
 
-  def attach_carriage
-    @carriage_count += 1 if speed.zero?
+  def attach_carriage(carriage)
+    @carriages << carriage if speed.zero? && carriage.type == @type
   end
 
   def detach_carriage
-    @carriage_count -= 1 if speed.zero? && @carriage_count.positive?
+    @carriages.delete_at(@carriages.length - 2) if speed.zero? && @carriages.length > 2
   end
 
   def route=(route)
