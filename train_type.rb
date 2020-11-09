@@ -1,4 +1,4 @@
-class TrainType
+module TrainType
   PASSENGER = 'пассажирский'.freeze
   CARGO = 'грузовой'.freeze
 end
