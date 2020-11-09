@@ -21,3 +21,6 @@ Metrics/BlockLength:
 
 Metrics/CyclomaticComplexity:
   Max: 12
+
+Style/ClassVars:
+  Enabled: false
