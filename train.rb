@@ -1,9 +1,13 @@
 require_relative 'instance_counter'
 require_relative 'brand'
+require_relative 'validator'
 
 class Train
   include InstanceCounter
   include Brand
+  include Validator
+
+  NUMBER_FORMAT = /^[0-9a-zа-я]{3}-?[0-9a-zа-я]{2}$/i.freeze
 
   attr_accessor :speed
   attr_reader :number, :carriages, :type
@@ -24,6 +28,7 @@ class Train
 
     @@trains << self
     register_instance
+    valid!
   end
 
   def stop
@@ -70,5 +75,12 @@ class Train
 
   def next_station
     @route.stations[@position + 1] if @position < @route.length - 1
+  end
+
+  protected
+
+  def valid!
+    raise 'Invalid train number' if @number !~ NUMBER_FORMAT
+    raise 'Invalid train type' unless TrainType.valid?(@type)
   end
 end

@@ -26,6 +26,7 @@ class Main
   # Main class needs launch method only
   # Other methods are internal implementation
   # So they are private
+
   private
 
   def show_command_list
@@ -42,33 +43,43 @@ class Main
     puts '11. Показать список поездов на станции'
   end
 
+  def execute_command_method(command)
+    method(command).call
+    puts 'Операция прошла успешно!'
+  rescue RuntimeError
+    puts 'Ошибка! Попробуйте снова'
+    retry
+  end
+
   def execute_command(command)
-    case command
-    when '1'
-      create_station
-    when '2'
-      create_train
-    when '3'
-      create_route
-    when '4'
-      add_station_to_route
-    when '5'
-      remove_station_from_route
-    when '6'
-      set_route_for_train
-    when '7'
-      attach_carriage
-    when '8'
-      detach_carriage
-    when '9'
-      move_train
-    when '10'
-      show_stations
-    when '11'
-      show_trains_of_station
-    else
-      puts 'Неизвестная команда'
-    end
+    method = case command
+             when '1'
+               :create_station
+             when '2'
+               :create_train
+             when '3'
+               :create_route
+             when '4'
+               :add_station_to_route
+             when '5'
+               :remove_station_from_route
+             when '6'
+               :set_route_for_train
+             when '7'
+               :attach_carriage
+             when '8'
+               :detach_carriage
+             when '9'
+               :move_train
+             when '10'
+               :show_stations
+             when '11'
+               :show_trains_of_station
+             else
+               puts 'Неизвестная команда'
+               return
+             end
+    execute_command_method(method)
   end
 
   def find_station(displaying_text = 'Введите название станции: ')
@@ -125,8 +136,7 @@ class Main
             when TrainType::CARGO
               CargoTrain.new(number)
             else
-              puts 'Неправильный тип поезда'
-              return
+              Train.new(number, type)
             end
     @trains << train
   end
@@ -181,7 +191,7 @@ class Main
                when TrainType::CARGO
                  CargoCarriage.new
                else
-                 puts 'Неизвестный тип поезда'
+                 Carriage(train.type)
                  return
                end
     train.attach_carriage(carriage)
@@ -209,7 +219,7 @@ class Main
     when '2'
       train.to_back
     else
-      puts 'Неизвестная команда'
+      raise 'Неизвестная команда'
     end
   end
 
