@@ -1,7 +1,9 @@
 require_relative 'instance_counter'
+require_relative 'validator'
 
 class Station
   include InstanceCounter
+  include Validator
 
   attr_reader :name, :trains
 
@@ -21,6 +23,7 @@ class Station
 
     self.class.stations << self
     register_instance
+    valid!
   end
 
   def add_train(train)
@@ -33,5 +36,11 @@ class Station
 
   def remove_train(train)
     trains.delete(train)
+  end
+
+  protected
+
+  def valid!
+    raise 'Invalid station name' if @name.length.zero?
   end
 end
