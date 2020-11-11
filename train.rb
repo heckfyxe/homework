@@ -77,6 +77,10 @@ class Train
     @route.stations[@position + 1] if @position < @route.length - 1
   end
 
+  def each(&block)
+    @carriages.each { |carriage| block.call(carriage) } if block_given?
+  end
+
   protected
 
   def valid!
