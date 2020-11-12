@@ -11,16 +11,7 @@ AllCops:
   NewCops: enable
 
 Metrics/MethodLength:
-  Max: 30
-
-Metrics/ClassLength:
-  Max: 200
-
-Metrics/BlockLength:
-  Max: 30
-
-Metrics/CyclomaticComplexity:
-  Max: 12
+  Max: 15
 
 Style/ClassVars:
   Enabled: false

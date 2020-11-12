@@ -38,6 +38,10 @@ class Station
     trains.delete(train)
   end
 
+  def each(&block)
+    @trains.each { |train| block.call(train) } if block_given?
+  end
+
   protected
 
   def valid!

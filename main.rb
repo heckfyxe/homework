@@ -6,6 +6,7 @@ require_relative 'route'
 require_relative 'station'
 require_relative 'train_type'
 
+# rubocop:disable Metrics/ClassLength
 class Main
   def initialize
     @stations = []
@@ -41,16 +42,20 @@ class Main
     puts '9. Переместить поезд'
     puts '10. Показать список станций'
     puts '11. Показать список поездов на станции'
+    puts '12. Показать список вагонов поезда'
+    puts '13. Занять место в пассажирском поезде'
+    puts '14. Поместить груз в грузовой поезд'
   end
 
   def execute_command_method(command)
     method(command).call
-    puts 'Операция прошла успешно!'
   rescue RuntimeError
     puts 'Ошибка! Попробуйте снова'
     retry
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
   def execute_command(command)
     method = case command
              when '1'
@@ -75,11 +80,31 @@ class Main
                :show_stations
              when '11'
                :show_trains_of_station
+             when '12'
+               :show_carriages_of_train
+             when '13'
+               :take_place_in_passenger_train
+             when '14'
+               :take_place_in_cargo_train
              else
                puts 'Неизвестная команда'
                return
              end
     execute_command_method(method)
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength
+
+  def create_passenger_train(number)
+    print 'Введите количество мест: '
+    seats_count = gets.chomp.to_i
+    PassengerTrain.new(number, seats_count)
+  end
+
+  def create_cargo_train(number)
+    print 'Введите объём места для груза: '
+    capacity = gets.chomp.to_i
+    CargoTrain.new(number, capacity)
   end
 
   def find_station(displaying_text = 'Введите название станции: ')
@@ -103,6 +128,18 @@ class Main
     train_number = gets.chomp
     train = @trains.select { |t| t.number == train_number }.first
     puts 'Не найден поезд с таким номером' if train.nil?
+    train
+  end
+
+  def find_train_with_type_checking(type)
+    train = find_train
+    return if train.nil?
+
+    unless train.type == type
+      puts "Поезд должен иметь тип <#{type}>"
+      return
+    end
+
     train
   end
 
@@ -132,9 +169,9 @@ class Main
     type = gets.chomp
     train = case type
             when TrainType::PASSENGER
-              PassengerTrain.new(number)
+              create_passenger_train(number)
             when TrainType::CARGO
-              CargoTrain.new(number)
+              create_cargo_train(number)
             else
               Train.new(number, type)
             end
@@ -233,8 +270,36 @@ class Main
     station = find_station
     return if station.nil?
 
-    station.trains.each { |train| puts train.number }
+    station.each { |train| puts train.number }
+  end
+
+  # 12.
+  def show_carriages_of_train
+    train = find_train
+    return if train.nil?
+
+    train.each { |carriage| puts carriage }
+  end
+
+  # 13.
+  def take_place_in_passenger_train
+    train = find_train_with_type_checking(TrainType::PASSENGER)
+    return if train.nil?
+
+    train.take_seat
+  end
+
+  # 14.
+  def take_place_in_cargo_train
+    train = find_train_with_type_checking(TrainType::CARGO)
+    return if train.nil?
+
+    print 'Введите объём груза: '
+    capacity = gets.chomp.to_i
+    train.take_place(capacity)
   end
 end
+
+# rubocop:enable Metrics/ClassLength
 
 Main.new.launch
