@@ -6,6 +6,7 @@ require_relative 'route'
 require_relative 'station'
 require_relative 'train_type'
 
+# rubocop:disable Metrics/ClassLength
 class Main
   def initialize
     @stations = []
@@ -53,6 +54,8 @@ class Main
     retry
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
   def execute_command(command)
     method = case command
              when '1'
@@ -89,6 +92,8 @@ class Main
              end
     execute_command_method(method)
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength
 
   def create_passenger_train(number)
     print 'Введите количество мест: '
@@ -294,5 +299,7 @@ class Main
     train.take_place(capacity)
   end
 end
+
+# rubocop:enable Metrics/ClassLength
 
 Main.new.launch
