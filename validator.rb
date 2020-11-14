@@ -36,19 +36,10 @@ module Validator
 
     def validation!(variable, validation_type, argument)
       variable_value = instance_variable_get("@#{variable}")
-      case validation_type
-      when :presence
-        presence_validation(variable, variable_value)
-      when :format
-        format_validation(variable, variable_value, argument)
-      when :type
-        type_validation(variable, variable_value, argument)
-      else
-        raise 'Unknown validation type'
-      end
+      send "#{validation_type}_validation".to_sym, variable, variable_value, argument
     end
 
-    def presence_validation(variable_name, variable_value)
+    def presence_validation(variable_name, variable_value, _arg)
       raise "#{variable_name} variable is nil or empty!" if variable_value.nil? || (variable_value.is_a?(String) && variable_value.empty?)
     end
 
