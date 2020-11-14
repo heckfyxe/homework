@@ -1,21 +1,20 @@
 require_relative 'instance_counter'
-require_relative 'validator'
+require_relative 'accessors'
 
 class Route
   include InstanceCounter
-  include Validator
+  include Accessors
 
-  attr_reader :stations
+  attr_accessor_with_history :stations
 
   def initialize(start_station, end_station)
-    @stations = [start_station, end_station]
+    self.stations = [start_station, end_station]
 
     register_instance
-    valid!
   end
 
   def add(station)
-    @stations.insert(@stations.length - 1, station) unless @stations.include?(station)
+    self.stations = stations[0...(stations.length - 1)] + [station] + [stations.last] unless stations.include?(station)
   end
 
   def length
@@ -23,12 +22,7 @@ class Route
   end
 
   def delete(station)
-    @stations.delete(station)
-  end
-
-  protected
-
-  def valid!
-    raise 'Route has same stations' unless @stations.uniq.length == @stations.length
+    index = stations.index(station)
+    self.stations = stations[0...index] + stations[(index + 1)..-1]
   end
 end

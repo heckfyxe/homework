@@ -7,6 +7,9 @@ class Station
 
   attr_reader :name, :trains
 
+  validate :stations, :presence
+  validate :name, :type, String
+
   @stations = []
 
   class << self
@@ -40,11 +43,5 @@ class Station
 
   def each(&block)
     @trains.each { |train| block.call(train) } if block_given?
-  end
-
-  protected
-
-  def valid!
-    raise 'Invalid station name' if @name.length.zero?
   end
 end

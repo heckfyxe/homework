@@ -1,16 +1,24 @@
 require_relative 'instance_counter'
 require_relative 'brand'
 require_relative 'validator'
+require_relative 'accessors'
 
 class Train
   include InstanceCounter
   include Brand
   include Validator
+  include Accessors
 
   NUMBER_FORMAT = /^[0-9a-zа-я]{3}-?[0-9a-zа-я]{2}$/i.freeze
 
   attr_accessor :speed
-  attr_reader :number, :carriages, :type
+  attr_reader :number, :carriages
+
+  validate :number, :presence
+  validate :number, :format, NUMBER_FORMAT
+  validate :type, :type, String
+
+  strong_attr_accessor :type, String
 
   @@trains = []
 
@@ -79,12 +87,5 @@ class Train
 
   def each(&block)
     @carriages.each { |carriage| block.call(carriage) } if block_given?
-  end
-
-  protected
-
-  def valid!
-    raise 'Invalid train number' if @number !~ NUMBER_FORMAT
-    raise 'Invalid train type' unless TrainType.valid?(@type)
   end
 end
