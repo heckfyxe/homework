@@ -8,14 +8,11 @@ class Carriage
 
   attr_reader :type
 
+  validate :type, :presence
+  validate :type, :type, String
+
   def initialize(type)
     @type = type
     valid!
-  end
-
-  protected
-
-  def valid!
-    raise 'Invalid carriage type' unless TrainType.valid?(@type)
   end
 end
